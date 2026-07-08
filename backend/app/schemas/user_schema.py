@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
+from app.enums.user_role import UserRole
 
 class UserRegister(BaseModel):
     full_name: str
@@ -8,7 +9,7 @@ class UserRegister(BaseModel):
     password: str
     phone: Optional[str] = None
 
-    role: str
+    role: UserRole
 
     # Vendor Information
     business_name: Optional[str] = None

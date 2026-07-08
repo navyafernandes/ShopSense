@@ -9,6 +9,8 @@ from app.auth.hashing import hash_password
 from app.auth.hashing import verify_password
 from app.auth.jwt_handler import create_access_token
 
+from app.enums.user_role import UserRole
+
 
 def register_user(db: Session, user_data):
 
@@ -36,7 +38,7 @@ def register_user(db: Session, user_data):
 
     db.flush()
 
-    if user_data.role == "CUSTOMER":
+    if user_data.role == UserRole.CUSTOMER:
 
         customer = Customer(
             user_id=new_user.user_id
@@ -44,7 +46,7 @@ def register_user(db: Session, user_data):
 
         db.add(customer)
 
-    elif user_data.role == "VENDOR":
+    elif user_data.role == UserRole.VENDOR:
 
         vendor = Vendor(
             user_id=new_user.user_id,

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
-from jose import jwt
+from jose import JWTError, jwt
+
 
 from app.config import (
     SECRET_KEY,
@@ -30,17 +31,17 @@ from jose import JWTError, jwt
 
 
 def verify_token(token: str):
-
     try:
-
         payload = jwt.decode(
             token,
             SECRET_KEY,
             algorithms=[ALGORITHM]
         )
 
+        print("✅ Payload:", payload)
+
         return payload
 
-    except JWTError:
-
+    except JWTError as e:
+        print("❌ JWT Error:", str(e))
         return None
