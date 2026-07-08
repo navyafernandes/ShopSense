@@ -13,13 +13,25 @@ CREATE TABLE products (
 
     sku VARCHAR(50) UNIQUE,
 
-    price DECIMAL(10,2) NOT NULL,
+    thumbnail_url VARCHAR(255),
 
-    discount_price DECIMAL(10,2),
+    price DECIMAL(10,2)
+        NOT NULL
+        CHECK (price >= 0),
 
-    status VARCHAR(20)
+    discount_price DECIMAL(10,2)
+        CHECK (discount_price >= 0),
+
+    rating DECIMAL(2,1)
+        DEFAULT 0.0
+        CHECK (rating BETWEEN 0 AND 5),
+
+    product_status VARCHAR(20)
         DEFAULT 'ACTIVE'
-        CHECK (status IN ('ACTIVE', 'OUT_OF_STOCK', 'DISCONTINUED')),
+        CHECK (
+            product_status IN
+            ('ACTIVE','OUT_OF_STOCK','DISCONTINUED')
+        ),
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

@@ -9,13 +9,22 @@ CREATE TABLE vendors (
 
     gst_number VARCHAR(20) UNIQUE,
 
-    commission_rate DECIMAL(5,2) DEFAULT 10.00,
+    commission_rate DECIMAL(5,2)
+        DEFAULT 10.00
+        CHECK (commission_rate >= 0),
 
     verification_status VARCHAR(20)
         DEFAULT 'PENDING'
-        CHECK (verification_status IN ('PENDING', 'APPROVED', 'REJECTED')),
+        CHECK (
+            verification_status IN
+            ('PENDING','APPROVED','REJECTED')
+        ),
 
     joined_date DATE DEFAULT CURRENT_DATE,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_vendor_user
         FOREIGN KEY (user_id)

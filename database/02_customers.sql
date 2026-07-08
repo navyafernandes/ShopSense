@@ -13,6 +13,10 @@ CREATE TABLE customers (
 
     postal_code VARCHAR(10),
 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     CONSTRAINT fk_customer_user
         FOREIGN KEY (user_id)
         REFERENCES users(user_id)
