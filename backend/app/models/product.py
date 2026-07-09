@@ -65,3 +65,9 @@ class Product(Base):
     vendor = relationship("Vendor")
 
     category = relationship("Category")
+
+    inventory = relationship(
+    "Inventory",
+    back_populates="product",
+    uselist=False
+)
