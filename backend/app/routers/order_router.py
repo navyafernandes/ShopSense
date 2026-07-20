@@ -6,6 +6,11 @@ from app.dependencies.auth import get_current_user
 from app.enums.user_role import UserRole
 from app.models.user import User
 
+from app.services import order_service
+
+from typing import List
+from app.schemas.order_schema import OrderListResponse
+
 from app.schemas.order_schema import (
     OrderCreate,
     OrderSummaryResponse
@@ -18,6 +23,18 @@ router = APIRouter(
     tags=["Orders"]
 )
 
+@router.get(
+    "",
+    response_model=List[OrderListResponse]
+)
+def list_orders(
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+    return order_service.get_customer_orders(
+        db,
+        user
+    )
 
 @router.post(
     "",
@@ -35,31 +52,10 @@ def place_order(
             detail="Only customers can place orders."
         )
 
-    result = create_order(
-        db,
-        order,
-        current_user
-    )
+    result = create_order(db, order, current_user)
 
-    if result == "CUSTOMER_NOT_FOUND":
-        raise HTTPException(404, "Customer not found.")
-
-    if result == "CART_NOT_FOUND":
-        raise HTTPException(404, "Cart not found.")
-
-    if result == "EMPTY_CART":
-        raise HTTPException(400, "Cart is empty.")
-
-    if result == "PRODUCT_NOT_FOUND":
-        raise HTTPException(404, "Product not found.")
-
-    if result == "INVENTORY_NOT_FOUND":
-        raise HTTPException(404, "Inventory not found.")
-
-    if result == "INSUFFICIENT_STOCK":
-        raise HTTPException(
-            status_code=400,
-            detail="Insufficient stock."
-        )
+    print(result)
 
     return result
+
+    

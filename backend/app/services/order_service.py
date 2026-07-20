@@ -137,3 +137,29 @@ def create_order(
             .all()
         )
     }
+
+from app.models.customer import Customer
+from app.models.order import Order
+
+
+def get_customer_orders(
+    db: Session,
+    user
+):
+    customer = (
+        db.query(Customer)
+        .filter(Customer.user_id == user.user_id)
+        .first()
+    )
+
+    if customer is None:
+        return "CUSTOMER_NOT_FOUND"
+
+    orders = (
+        db.query(Order)
+        .filter(Order.customer_id == customer.customer_id)
+        .order_by(Order.order_date.desc())
+        .all()
+    )
+
+    return orders

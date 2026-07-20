@@ -2,7 +2,8 @@ from sqlalchemy.orm import Session
 
 from app.models.product import Product
 from app.models.vendor import Vendor
-
+from app.models.category import Category
+from app.models.inventory import Inventory
 
 def create_product(db: Session, product_data, user):
 
@@ -31,6 +32,15 @@ def create_product(db: Session, product_data, user):
     db.add(product)
     db.commit()
     db.refresh(product)
+
+    inventory = Inventory(
+    product_id=product.product_id,
+    stock_quantity=0,
+    reorder_level=10,
+    warehouse_location=None
+    )
+    db.add(inventory)
+    db.commit()
 
     return product
 
@@ -114,3 +124,40 @@ def delete_product(
     db.commit()
 
     return "DELETED"
+
+def get_product_catalogue(db: Session):
+
+    products = (
+        db.query(
+            Product,
+            Vendor.business_name,
+            Category.category_name
+        )
+        .join(
+            Vendor,
+            Product.vendor_id == Vendor.vendor_id
+        )
+        .join(
+            Category,
+            Product.category_id == Category.category_id
+        )
+        .all()
+    )
+
+    result = []
+
+    for product, vendor_name, category_name in products:
+
+        result.append({
+            "product_id": product.product_id,
+            "product_name": product.product_name,
+            "brand": product.brand,
+            "vendor_name": vendor_name,
+            "category_name": category_name,
+            "thumbnail_url": product.thumbnail_url,
+            "price": product.price,
+            "discount_price": product.discount_price,
+            "product_status": product.product_status,
+        })
+
+    return result

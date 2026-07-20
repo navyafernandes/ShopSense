@@ -12,6 +12,40 @@ from app.routers.order_router import router as order_router
 
 from app.routers.payment_router import router as payment_router
 
+from app.routers.analytics_router import router as analytics_router
+
+from app.routers.vendor_router import router as vendor_router
+
+from app.routers.transaction_router import router as transaction_router
+
+from app.routers.vendor_dashboard_router import router as vendor_dashboard_router
+
+from app.routers.vendor_product_router import (
+    router as vendor_product_router
+)
+
+from app.routers.category_router import (
+    router as category_router
+)
+
+from app.routers.vendor_inventory_router import (
+    router as vendor_inventory_router
+)
+
+from app.routers.vendor_order_router import (
+    router as vendor_order_router
+)
+
+from app.routers.vendor_transaction_router import (
+    router as vendor_transaction_router,
+)
+
+from app.routers import customer_router
+
+from fastapi.middleware.cors import CORSMiddleware
+
+
+
 app = FastAPI(
     title="ShopSense API",
     description="Multi-Vendor E-Commerce Analytics Platform",
@@ -26,6 +60,15 @@ def home():
         "status": "Backend Running Successfully 🚀"
     }
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth_router)
 app.include_router(product_router)
@@ -33,3 +76,13 @@ app.include_router(inventory_router)
 app.include_router(cart_router)
 app.include_router(order_router)
 app.include_router(payment_router)
+app.include_router(analytics_router)
+app.include_router(vendor_router)
+app.include_router(transaction_router)
+app.include_router(vendor_dashboard_router)
+app.include_router(vendor_product_router)
+app.include_router(category_router)
+app.include_router(vendor_inventory_router)
+app.include_router(vendor_order_router)
+app.include_router(vendor_transaction_router)
+app.include_router(customer_router.router)

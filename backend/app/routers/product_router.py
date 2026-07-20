@@ -10,6 +10,7 @@ from app.schemas.product_schema import (
     ProductCreate,
     ProductUpdate,
     ProductResponse,
+    ProductCatalogueResponse,
 )
 
 from app.services.product_service import (
@@ -17,7 +18,8 @@ from app.services.product_service import (
     get_all_products,
     get_product_by_id,
     update_product,
-    delete_product
+    delete_product,
+    get_product_catalogue,
 )
 
 router = APIRouter(
@@ -59,6 +61,14 @@ def list_products(
 ):
     return get_all_products(db)
 
+@router.get(
+    "/catalogue",
+    response_model=list[ProductCatalogueResponse]
+)
+def catalogue(
+    db: Session = Depends(get_db)
+):
+    return get_product_catalogue(db)
 
 @router.get("/{product_id}", response_model=ProductResponse)
 def get_product(

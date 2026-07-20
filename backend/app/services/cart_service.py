@@ -75,7 +75,6 @@ def add_to_cart(
 
 from decimal import Decimal
 
-
 def get_cart(
     db: Session,
     user
@@ -96,8 +95,11 @@ def get_cart(
     )
 
     if cart is None:
-        return []
-    
+        return {
+            "items": [],
+            "total_amount": Decimal("0")
+        }
+
     items = (
         db.query(CartItem, Product)
         .join(
@@ -111,17 +113,18 @@ def get_cart(
     )
 
     response = []
-
     total = Decimal("0")
 
     for cart_item, product in items:
 
         subtotal = product.price * cart_item.quantity
-
         total += subtotal
 
         response.append({
+            "cart_item_id": cart_item.cart_item_id,
+            "product_id": product.product_id,
             "product_name": product.product_name,
+            "thumbnail_url": product.thumbnail_url,
             "quantity": cart_item.quantity,
             "price": product.price,
             "subtotal": subtotal

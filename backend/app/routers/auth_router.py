@@ -35,21 +35,22 @@ def login(
     db: Session = Depends(get_db)
 ):
 
-    token = authenticate_user(
+    result = authenticate_user(
         db,
         user.email,
         user.password
     )
 
-    if not token:
+    if not result:
         raise HTTPException(
             status_code=401,
             detail="Invalid email or password"
         )
 
     return {
-        "access_token": token,
-        "token_type": "bearer"
+        "access_token": result["access_token"],
+        "token_type": "bearer",
+        "role": result["role"]
     }
 
 @router.get("/me", response_model=UserResponse)

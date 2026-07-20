@@ -72,8 +72,14 @@ def authenticate_user(db: Session, email: str, password: str):
         .first()
     )
 
+    print("Email entered:", email)
+    print("User found:", user)
+
     if not user:
         return None
+
+    print("Stored hash:", user.password_hash)
+    print("Password match:", verify_password(password, user.password_hash))
 
     if not verify_password(password, user.password_hash):
         return None
@@ -86,4 +92,7 @@ def authenticate_user(db: Session, email: str, password: str):
         }
     )
 
-    return token
+    return {
+        "access_token": token,
+        "role": user.role
+    }

@@ -22,7 +22,10 @@ class CartItemResponse(BaseModel):
 
 
 class CartItemDetail(BaseModel):
+    cart_item_id: int
+    product_id: int
     product_name: str
+    thumbnail_url: str | None = None
     quantity: int
     price: Decimal
     subtotal: Decimal

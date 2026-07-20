@@ -21,7 +21,7 @@ class ProductUpdate(BaseModel):
     thumbnail_url: Optional[str] = None
     price: Decimal
     discount_price: Optional[Decimal] = None
-    product_status: str  
+    product_status: str
 
 
 class ProductResponse(BaseModel):
@@ -36,6 +36,21 @@ class ProductResponse(BaseModel):
     price: Decimal
     discount_price: Optional[Decimal]
     rating: Decimal
+    product_status: str
+
+    class Config:
+        from_attributes = True
+
+
+class ProductCatalogueResponse(BaseModel):
+    product_id: int
+    product_name: str
+    brand: str | None = None
+    vendor_name: str
+    category_name: str
+    thumbnail_url: str | None = None
+    price: Decimal
+    discount_price: Decimal | None = None
     product_status: str
 
     class Config:

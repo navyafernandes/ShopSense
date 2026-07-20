@@ -1,6 +1,8 @@
+from pydantic import BaseModel
 from decimal import Decimal
 from datetime import datetime
-from typing import List
+from typing import List, Optional
+
 
 from pydantic import BaseModel
 
@@ -35,3 +37,15 @@ class OrderResponse(BaseModel):
 class OrderSummaryResponse(BaseModel):
     order: OrderResponse
     items: List[OrderItemResponse]
+
+class OrderListResponse(BaseModel):
+    order_id: int
+    order_date: datetime
+    total_amount: Decimal
+    order_status: str
+    shipping_address: str
+    tracking_number: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+

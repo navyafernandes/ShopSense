@@ -1,0 +1,114 @@
+import { useEffect, useState } from "react";
+import api from "../../services/api";
+
+import OrderCard from "../../components/vendor/OrderCard";
+import UpdateOrderStatusModal from "../../components/vendor/UpdateOrderStatusModal";
+
+import { Search } from "lucide-react";
+
+function VendorOrders() {
+  const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+
+  const [search, setSearch] = useState("");
+
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    const filtered = orders.filter(
+      (order) =>
+        order.customer_name
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+        order.product_name
+          .toLowerCase()
+          .includes(search.toLowerCase())
+    );
+
+    setFilteredOrders(filtered);
+  }, [search, orders]);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await api.get("/vendor/orders");
+      setOrders(response.data);
+      setFilteredOrders(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const openModal = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  return (
+    <div>
+
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+
+        <div>
+          <h1 className="text-4xl font-bold text-slate-900">
+            Vendor Orders
+          </h1>
+
+          <p className="text-slate-500 mt-2">
+            View and manage customer orders.
+          </p>
+        </div>
+
+        <div className="relative w-full md:w-96">
+
+          <Search
+            className="absolute left-3 top-3 text-slate-400"
+            size={18}
+          />
+
+          <input
+            type="text"
+            placeholder="Search customer or product..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-slate-300 pl-10 pr-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+
+        </div>
+
+      </div>
+
+      {filteredOrders.length === 0 ? (
+        <div className="bg-white rounded-2xl shadow p-10 text-center text-slate-500">
+          No orders found.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+
+          {filteredOrders.map((order) => (
+            <OrderCard
+              key={`${order.order_id}-${order.product_name}`}
+              order={order}
+              onUpdate={openModal}
+            />
+          ))}
+
+        </div>
+      )}
+
+      <UpdateOrderStatusModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        order={selectedOrder}
+        onSuccess={fetchOrders}
+      />
+
+    </div>
+  );
+}
+
+export default VendorOrders;
